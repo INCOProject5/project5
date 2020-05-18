@@ -1,0 +1,45 @@
+{
+  "name": "project5",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/INCOProject5/project5.git"
+  },
+  "keywords": [
+    "expressj",
+    "mysql",
+    "movies",
+    "rating"
+  ],
+  "author": "Inco-group",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/INCOProject5/project5/issues"
+  },
+  "homepage": "https://github.com/INCOProject5/project5#readme",
+  "devDependencies": {
+    "axios": "^0.19.2",
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "express-handlebars": "^4.0.4",
+    "express-session": "^1.17.1",
+    "http-errors": "^1.7.3",
+    "mysql": "^2.18.1",
+    "uuid": "^8.0.0",
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "eslint-config-prettier": "^6.11.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-prettier": "^3.1.3",
+    "morgan": "^1.10.0",
+    "prettier": "^2.0.5"
+  }
+}
