@@ -23,7 +23,7 @@ const dbConfigDev = {
 }
 
 const sessConfig = {
-  genid: (req) => uuid.v4(),
+  genid: () => uuid.v4(),
   secret: 'I will Never GiveUp ! :boxing_glove:',
   resave: false,
   saveUninitialized: true,
