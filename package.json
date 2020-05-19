@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "initdb": "node ./model/initial_db_from.js"
+    "initdb": "node ./model/initial_db_from.js",
+    "createusers": "node ./model/createUsers.js"
   },
   "repository": {
     "type": "git",
