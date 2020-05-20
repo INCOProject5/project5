@@ -1,11 +1,27 @@
 const express = require('express')
+const axios = require('axios').default
 const { getUserByEmailAndPass } = require('../model/model')
 const { signup } = require('../model/model')
 
 const router = express.Router()
-const indexGet = (req, res) => res.render('index')
 
-// https://yts.mx/api/v2/list_movies.json?order_by=asc&limit=30&sort_by=seeds
+const indexGet = async (req, res) => {
+  axios
+    .get('https://yts.mx/api/v2/list_movies.json?order_by=asc&limit=5&sort_by=seeds&page=2')
+    // .then((data) => res.send(data.data)) - use for debugging
+    .then((data) => {
+      // curly brackets around movies appends .movies to data.data.data
+      let { movies } = data.data.data
+      res.cookie('movies', JSON.stringify(movies))
+      // const cookieMovie = req.cookies.movies
+      // console.log(cookieMovie)
+      res.render('index', { movies })
+      // console.log(typeof data.data.data.movies) - check datatype
+    })
+    .catch((err) => res.send(err))
+}
+
+const movieGet = async (req, res) => {}
 
 const loginGet = (req, res) => {
   if (req.session.user) return res.redirect('/')
@@ -46,7 +62,9 @@ const signupPost = async (req, res) => {
 }
 
 router.get('/', indexGet)
+router.get('/movie', movieGet)
 
+// authentication
 router.get('/login', loginGet)
 router.post('/login', loginPost)
 
@@ -54,5 +72,6 @@ router.get('/signup', signupGet)
 router.post('/signup', signupPost)
 
 router.get('/logout', logoutGet)
+// end authentication
 
 module.exports = router

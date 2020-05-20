@@ -1,5 +1,27 @@
+{{!-- call header from partials folder --}}
 {{> menu}}
 
-<div class="container">
-    hello index
+<div class="container ">
+    <div class="cards_container">
+        {{!-- check if movies passing from router  = true --}}
+        {{#if movies}}
+        {{!-- for each movie, call a loop --}}
+        {{#each movies}}
+        <div class="movie_card " style="background-image: url('{{large_cover_image}}');">
+            <div class="movie_card_content">
+                <div class="movie_header">
+                    <h3>{{title_english}}</h3>
+                    <span>{{year}}</span>
+                    {{!-- <span>{{ConvertRateTo5stars rating}}</span> --}}
+                    <span>rate {{rating}}</span>
+                </div>
+                <a href="/movie/{{id}}">Click to view details and rate!</a>
+            </div>
+        </div>
+        {{/each}}
+        {{/if}}
+    </div>
 </div>
+{{!-- {{background_image} --}}
+{{!-- {{title_long}} --}}
+{{!-- {{synopsis}} --}}

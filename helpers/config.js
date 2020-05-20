@@ -5,7 +5,7 @@ let expiryDate = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
 const dbConfig = {
   host: 'localhost',
   user: 'root',
-  password: 'admin',
+  password: 'password1',
   database: 'movies',
 }
 
