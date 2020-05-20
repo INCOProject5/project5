@@ -35,6 +35,7 @@ const loginGet = (req, res) => {
   if (req.session.user) return res.redirect('/')
   return res.render('login', { data: '' })
 }
+
 const loginPost = async (req, res) => {
   try {
     const { email, password } = req.body
