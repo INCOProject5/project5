@@ -12,16 +12,24 @@ const indexGet = async (req, res) => {
     .then((data) => {
       // curly brackets around movies appends .movies to data.data.data
       let { movies } = data.data.data
-      res.cookie('movies', JSON.stringify(movies))
-      // const cookieMovie = req.cookies.movies
-      // console.log(cookieMovie)
       res.render('index', { movies })
       // console.log(typeof data.data.data.movies) - check datatype
     })
-    .catch((err) => res.send(err))
+    .catch((err) => console.log(err))
 }
 
-const movieGet = async (req, res) => {}
+const movieGet = async (req, res) => {
+  const { id } = req.params
+  // console.log({ id })
+  axios
+    .get(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
+    .then((data) => {
+      let { movie } = data.data.data
+      // res.render('movie', { movie })
+      res.render('movie', { movie })
+    })
+    .catch((err) => console.log(err))
+}
 
 const loginGet = (req, res) => {
   if (req.session.user) return res.redirect('/')
@@ -62,7 +70,7 @@ const signupPost = async (req, res) => {
 }
 
 router.get('/', indexGet)
-router.get('/movie', movieGet)
+router.get('/movie/:id', movieGet)
 
 // authentication
 router.get('/login', loginGet)
