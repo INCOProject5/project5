@@ -5,6 +5,8 @@ const { signup } = require('../model/model')
 const router = express.Router()
 const indexGet = (req, res) => res.render('index')
 
+// https://yts.mx/api/v2/list_movies.json?order_by=asc&limit=30&sort_by=seeds
+
 const loginGet = (req, res) => {
   if (req.session.user) return res.redirect('/')
   return res.render('login', { data: '' })
