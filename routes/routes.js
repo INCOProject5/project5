@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 const express = require('express')
@@ -8,12 +9,18 @@ const { signup } = require('../model/model')
 const router = express.Router()
 
 const indexGet = async (req, res) => {
+  // if session "movies"  exists
+  if (req.session && req.session.movies) return res.render('index', { movies: req.session.movies })
+
+  // if sesion "movies" not exists then fetch data from api and save session
   axios
-    .get('https://yts.mx/api/v2/list_movies.json?order_by=asc&limit=5&sort_by=seeds&page=2')
+    .get('https://yts.mx/api/v2/list_movies.json?order_by=asc&limit=6&sort_by=seeds&page=3')
     // .then((data) => res.send(data.data)) - use for debugging
     .then((data) => {
       // curly brackets around movies appends .movies to data.data.data
       let { movies } = data.data.data
+      req.session.movies = movies
+      console.log(req.session.movies)
       res.render('index', { movies })
       // console.log(typeof data.data.data.movies) - check datatype
     })
@@ -26,7 +33,6 @@ const movieGet = async (req, res) => {
     .get(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
     .then((data) => {
       let { movie } = data.data.data
-
       res.render('movie', { movie })
     })
     .catch((err) => console.log(err))
