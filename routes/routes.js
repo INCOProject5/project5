@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-unused-vars */
 const express = require('express')
 const axios = require('axios').default
 const { getUserByEmailAndPass } = require('../model/model')
@@ -20,15 +22,20 @@ const indexGet = async (req, res) => {
 
 const movieGet = async (req, res) => {
   const { id } = req.params
-  // console.log({ id })
   axios
     .get(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
     .then((data) => {
       let { movie } = data.data.data
-      // res.render('movie', { movie })
+
       res.render('movie', { movie })
     })
     .catch((err) => console.log(err))
+}
+
+const ratingPost = async (req, res) => {
+  const { user_id, movie_id, rate } = req.body
+
+  res.json({ newdata: 'data from server' })
 }
 
 const loginGet = (req, res) => {
@@ -72,6 +79,7 @@ const signupPost = async (req, res) => {
 
 router.get('/', indexGet)
 router.get('/movie/:id', movieGet)
+router.post('/rating', ratingPost)
 
 // authentication
 router.get('/login', loginGet)

@@ -159,3 +159,18 @@
     grid-template-columns: 1fr;
   }
 }
+
+.moviePage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.rating_spans > span,
+.total_rating {
+  display: inline-block;
+  padding: 10px;
+  margin-right: 5px;
+  cursor: pointer;
+  background: #f0ca62;
+  border-radius: 50%;
+}

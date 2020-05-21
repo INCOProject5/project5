@@ -1,6 +1,32 @@
 {{!-- call header from partials folder --}}
 {{> menu}}
 
-<img src="{{movie.background_image}}" />
-<h1> {{movie.title_long}} </h1>
-<h1> {{synopsis}}</h1>
+
+<div class=" moviePage">
+    <div class="img_wapper"><img src="{{movie.large_cover_image}}" /></div>
+    <div class="movie_details">
+        <h1>{{movie.title_long}}</h1>
+        <h4>{{movie.year}}</h4>
+        <div>
+            {{#each movie.genres}}
+            <span>{{this}}</span>
+            {{/each}}
+        </div>
+        <p>{{movie.description_full}}</p>
+        <h6>total rating: <span class="total_rating">{{movie.rating}}</span></h6>
+        <h6>your rating: <span class="total_rating">{{movie.rating}}</span></h6>
+
+        <div id="rating_spans" class="rating_spans" data-movie-id="{{movie.id}}" data-user-id="myuserid">
+            <span data-value="1">1</span>
+            <span data-value="2">2</span>
+            <span data-value="3">3</span>
+            <span data-value="4">4</span>
+            <span data-value="5">5</span>
+            <span data-value="6">6</span>
+            <span data-value="7">7</span>
+            <span data-value="8">8</span>
+            <span data-value="9">9</span>
+            <span data-value="10">10</span>
+        </div>
+    </div>
+</div>
