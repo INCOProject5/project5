@@ -36,7 +36,8 @@ const signup = async (user) => {
   ])
 }
 
-const getRatesByMovieId = async (id) => query(`SELECT rate FROM movie WHERE movie_id=?`, id)
+const getRatesByMovieId = async (id) => query(`SELECT rate FROM movie WHERE movie_id=?`, [id])
+
 const getMovieByUserId = async (id) => query(`SELECT * FROM movie WHERE user_id=?`, id)
 const getByMovieIdAndUserId = async (mId, uId) =>
   query(`SELECT * FROM movie WHERE user_id=? AND movie_id=?`, [mId, uId])
@@ -45,4 +46,7 @@ module.exports = {
   getUserByEmailAndPass,
   signup,
   getUserById,
+  getRatesByMovieId,
+  getMovieByUserId,
+  getByMovieIdAndUserId,
 }

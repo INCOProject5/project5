@@ -4,8 +4,8 @@
 /* eslint-disable no-unused-vars */
 const express = require('express')
 const axios = require('axios').default
-const { getUserByEmailAndPass } = require('../model/model')
-const { signup } = require('../model/model')
+const { getUserByEmailAndPass, getRatesByMovieId, signup } = require('../model/model')
+const { average } = require('../helpers/utils')
 
 const router = express.Router()
 
@@ -15,12 +15,14 @@ const indexGet = async (req, res) => {
 
   // if sesion "movies" not exists then fetch data from api and save session
   axios
-    .get('https://yts.mx/api/v2/list_movies.json?order_by=asc&limit=6&sort_by=seeds&page=3')
+    .get('https://yts.mx/api/v2/list_movies.json?order_by=asc&limit=10&sort_by=seeds&page=3')
     // .then((data) => res.send(data.data)) - use for debugging
     .then((data) => {
       // curly brackets around movies appends .movies to data.data.data
       let { movies } = data.data.data
       req.session.movies = movies
+      if (req.session.user) return res.render('index', { movies, user: req.session.user })
+
       res.render('index', { movies })
       // console.log(typeof data.data.data.movies) - check datatype
     })
@@ -30,9 +32,14 @@ const indexGet = async (req, res) => {
 const movieGet = async (req, res) => {
   const { id } = req.params
 
+  const rate = await getRatesByMovieId(id)
+  console.log(rate)
+  console.log(average(rate.map((each) => each.rate)))
+
   if (req.session && req.session.movies) {
     let sessionData = req.session.movies
     let movie = sessionData.find((eachMovie) => eachMovie.id == id)
+    if (req.session.user) return res.render('movie', { movie, user: req.session.user })
 
     return res.render('movie', { movie })
   }
@@ -40,6 +47,8 @@ const movieGet = async (req, res) => {
     .get(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
     .then((data) => {
       let { movie } = data.data.data
+      if (req.session.user) return res.render('movie', { movie, user: req.session.user })
+
       res.render('movie', { movie })
     })
     .catch((err) => console.log(err))
@@ -61,7 +70,7 @@ const loginPost = async (req, res) => {
     const { email, password } = req.body
     const user = await getUserByEmailAndPass(email, password)
 
-    req.session.user = { email, id: user[0].id } // set session
+    req.session.user = { email, id: user[0].id, firstname: user[0].firstname } // set session
 
     res.redirect('/')
   } catch (error) {
