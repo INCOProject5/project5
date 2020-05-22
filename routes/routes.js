@@ -37,36 +37,22 @@ const indexGet = async (req, res) => {
 }
 //
 const movieGet = async (req, res) => {
-  const { id } = req.params
+  try {
+    const { id } = req.params
+    console.log(id)
+    const rate = await getRatesByMovieId(id)
 
-  const rate = await getRatesByMovieId(id)
+    let movieBy = {}
 
-  let movieBy = {}
+    if (req.session.user) {
+      movieBy = await getByMovieIdAndUserId(id, req.session.user.id)
+    }
 
-  if (req.session.user) {
-    movieBy = await getByMovieIdAndUserId(id, req.session.user.id)
-  }
+    const averageResult = average(rate.map((each) => each.rate)).toFixed(1)
 
-  const averageResult = average(rate.map((each) => each.rate))
-  console.log(averageResult)
-  if (req.session && req.session.movies) {
-    let sessionData = req.session.movies
-    let movie = sessionData.find((eachMovie) => eachMovie.id == id)
-    if (req.session.user)
-      return res.render('movie', {
-        movie,
-        user: req.session.user,
-        averageResult,
-        total: rate.length,
-        myRating: movieBy.map((each) => each.rate),
-      })
-
-    return res.render('movie', { movie, averageResult, total: rate.length })
-  }
-  axios
-    .get(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
-    .then((data) => {
-      let { movie } = data.data.data
+    if (req.session && req.session.movies) {
+      let sessionData = req.session.movies
+      let movie = sessionData.find((eachMovie) => eachMovie.id == id)
       if (req.session.user)
         return res.render('movie', {
           movie,
@@ -76,9 +62,27 @@ const movieGet = async (req, res) => {
           myRating: movieBy.map((each) => each.rate),
         })
 
-      res.render('movie', { movie, averageResult, total: rate.length })
-    })
-    .catch((err) => console.log(err))
+      return res.render('movie', { movie, averageResult, total: rate.length })
+    }
+    axios
+      .get(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
+      .then((data) => {
+        let { movie } = data.data.data
+        if (req.session.user)
+          return res.render('movie', {
+            movie,
+            user: req.session.user,
+            averageResult,
+            total: rate.length,
+            myRating: movieBy.map((each) => each.rate),
+          })
+
+        res.render('movie', { movie, averageResult, total: rate.length })
+      })
+      .catch((err) => console.log(err))
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const ratingGet = async (req, res) => {
@@ -87,11 +91,10 @@ const ratingGet = async (req, res) => {
 const ratingPost = async (req, res) => {
   try {
     const { user_id, movie_id, rate } = req.body
-    console.log(user_id)
-    console.log(movie_id)
-    console.log(rate)
+
     const newRating = await updateMovieRating(user_id, movie_id, rate)
-    return res.redirect('movie/:id')
+
+    return res.redirect(`/movie/${movie_id}`)
     // res.json({ newdata: 'data from server' })
   } catch (error) {
     res.render('login', { error })

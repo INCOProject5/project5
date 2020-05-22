@@ -1,9 +1,7 @@
 /* eslint-disable camelcase */
 // when we load page (DOMContentLoaded)...
 window.addEventListener('DOMContentLoaded', () => {
-  // const spans = document.querySelectorAll('.rating_spans > span')
   const spans = document.getElementById('rating_spans').children
-  // console.log(spans)
   const user_id = document.getElementById('rating_spans').getAttribute('data-user-id')
   const movie_id = document.getElementById('rating_spans').getAttribute('data-movie-id')
   const serverUrl = 'http://localhost:3000/rating'
@@ -22,7 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
         headers,
         body: JSON.stringify({ user_id, movie_id, rate }),
       }).then((response) => {
-        console.log(response)
+        window.location.reload()
       })
     })
   }
