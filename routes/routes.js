@@ -4,7 +4,13 @@
 /* eslint-disable no-unused-vars */
 const express = require('express')
 const axios = require('axios').default
-const { getUserByEmailAndPass, getRatesByMovieId, signup } = require('../model/model')
+const {
+  getUserByEmailAndPass,
+  getRatesByMovieId,
+  signup,
+  getMovieByUserId,
+  getByMovieIdAndUserId,
+} = require('../model/model')
 const { average } = require('../helpers/utils')
 
 const router = express.Router()
@@ -28,28 +34,41 @@ const indexGet = async (req, res) => {
     })
     .catch((err) => console.log(err))
 }
-
+//
 const movieGet = async (req, res) => {
   const { id } = req.params
 
   const rate = await getRatesByMovieId(id)
-  console.log(rate)
-  console.log(average(rate.map((each) => each.rate)))
+  const movieBy = await getByMovieIdAndUserId(id)
+
+  const averageResult = average(rate.map((each) => each.rate))
 
   if (req.session && req.session.movies) {
     let sessionData = req.session.movies
     let movie = sessionData.find((eachMovie) => eachMovie.id == id)
-    if (req.session.user) return res.render('movie', { movie, user: req.session.user })
+    if (req.session.user)
+      return res.render('movie', {
+        movie,
+        user: req.session.user,
+        averageResult,
+        total: rate.length,
+      })
 
-    return res.render('movie', { movie })
+    return res.render('movie', { movie, averageResult, total: rate.length })
   }
   axios
     .get(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
     .then((data) => {
       let { movie } = data.data.data
-      if (req.session.user) return res.render('movie', { movie, user: req.session.user })
+      if (req.session.user)
+        return res.render('movie', {
+          movie,
+          user: req.session.user,
+          averageResult,
+          total: rate.length,
+        })
 
-      res.render('movie', { movie })
+      res.render('movie', { movie, averageResult, total: rate.length })
     })
     .catch((err) => console.log(err))
 }
