@@ -12,10 +12,13 @@
             {{/each}}
         </div>
         <p class="description">{{movie.description_full}}</p>
-        <h6>total rating: <span class="total_rating">{{averageResult}}</span></h6>
+        <h6>Average rating: <span class="total_rating">{{averageResult}}</span></h6>
+        {{#if user}}
+        <h6>My rating: <span class="total_rating">{{myRating}}</span></h6>
+        {{/if}}
         <h6>total users rated this movie: <span class="total_rating">{{total}}</span></h6>
         <div class="movie_rate rating_spans" id="rating_spans" class="rating_spans" data-movie-id="{{movie.id}}"
-            data-user-id="myuserid">
+            data-user-id={{user.id}}>
             <form class="rating" data-user-id="{{../userId}}" data-movie-id="{{id}}">
                 <label>
                     <input type="radio" name="stars" value="1" />

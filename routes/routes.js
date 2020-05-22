@@ -10,6 +10,7 @@ const {
   signup,
   getMovieByUserId,
   getByMovieIdAndUserId,
+  updateMovieRating,
 } = require('../model/model')
 const { average } = require('../helpers/utils')
 
@@ -39,10 +40,15 @@ const movieGet = async (req, res) => {
   const { id } = req.params
 
   const rate = await getRatesByMovieId(id)
-  const movieBy = await getByMovieIdAndUserId(id)
+
+  let movieBy = {}
+
+  if (req.session.user) {
+    movieBy = await getByMovieIdAndUserId(id, req.session.user.id)
+  }
 
   const averageResult = average(rate.map((each) => each.rate))
-
+  console.log(averageResult)
   if (req.session && req.session.movies) {
     let sessionData = req.session.movies
     let movie = sessionData.find((eachMovie) => eachMovie.id == id)
@@ -52,6 +58,7 @@ const movieGet = async (req, res) => {
         user: req.session.user,
         averageResult,
         total: rate.length,
+        myRating: movieBy.map((each) => each.rate),
       })
 
     return res.render('movie', { movie, averageResult, total: rate.length })
@@ -66,6 +73,7 @@ const movieGet = async (req, res) => {
           user: req.session.user,
           averageResult,
           total: rate.length,
+          myRating: movieBy.map((each) => each.rate),
         })
 
       res.render('movie', { movie, averageResult, total: rate.length })
@@ -73,12 +81,22 @@ const movieGet = async (req, res) => {
     .catch((err) => console.log(err))
 }
 
-const ratingPost = async (req, res) => {
-  const { user_id, movie_id, rate } = req.body
-
-  res.json({ newdata: 'data from server' })
+const ratingGet = async (req, res) => {
+  res.redirect('/movie')
 }
-
+const ratingPost = async (req, res) => {
+  try {
+    const { user_id, movie_id, rate } = req.body
+    console.log(user_id)
+    console.log(movie_id)
+    console.log(rate)
+    const newRating = await updateMovieRating(user_id, movie_id, rate)
+    return res.redirect('movie/:id')
+    // res.json({ newdata: 'data from server' })
+  } catch (error) {
+    res.render('login', { error })
+  }
+}
 const loginGet = (req, res) => {
   if (req.session.user) return res.redirect('/')
   return res.render('login', { data: '' })
@@ -120,6 +138,8 @@ const signupPost = async (req, res) => {
 
 router.get('/', indexGet)
 router.get('/movie/:id', movieGet)
+
+router.get('/rating', ratingGet)
 router.post('/rating', ratingPost)
 
 // authentication

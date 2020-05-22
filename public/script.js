@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
 // when we load page (DOMContentLoaded)...
 window.addEventListener('DOMContentLoaded', () => {
-  const spans = document.querySelectorAll('.rating_spans > span')
+  // const spans = document.querySelectorAll('.rating_spans > span')
+  const spans = document.getElementById('rating_spans').children
+  // console.log(spans)
   const user_id = document.getElementById('rating_spans').getAttribute('data-user-id')
   const movie_id = document.getElementById('rating_spans').getAttribute('data-movie-id')
   const serverUrl = 'http://localhost:3000/rating'
@@ -12,7 +14,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
   for (let i = 0; i < spans.length; i++) {
     spans[i].addEventListener('click', (e) => {
-      let rate = e.target.getAttribute('data-value')
+      let rate = e.target.getAttribute('value')
+      // console.log(rate)
       //  sending data
       fetch(serverUrl, {
         method,
