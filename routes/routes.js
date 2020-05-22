@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable consistent-return */
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
@@ -20,7 +21,6 @@ const indexGet = async (req, res) => {
       // curly brackets around movies appends .movies to data.data.data
       let { movies } = data.data.data
       req.session.movies = movies
-      console.log(req.session.movies)
       res.render('index', { movies })
       // console.log(typeof data.data.data.movies) - check datatype
     })
@@ -29,6 +29,13 @@ const indexGet = async (req, res) => {
 
 const movieGet = async (req, res) => {
   const { id } = req.params
+
+  if (req.session && req.session.movies) {
+    let sessionData = req.session.movies
+    let movie = sessionData.find((eachMovie) => eachMovie.id == id)
+
+    return res.render('movie', { movie })
+  }
   axios
     .get(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
     .then((data) => {
