@@ -1,7 +1,7 @@
 .cards_container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin: 100px auto;
+  margin: 50px auto;
   grid-gap: 100px 40px;
 }
 .movie_card {
@@ -228,8 +228,32 @@
 }
 #search-btn {
   margin-top: 0 !important;
+  text-decoration: none;
+  color: white;
+  background: #206ada;
+  padding: 5px;
+}
+#search-btn:hover {
+  background: #2e486e;
 }
 
-/* Things to fix */
-/* also next screen for next page of movies. */
-/* Genre tickbox sorting */
+.genre_wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 70%;
+  margin: 20px auto;
+  justify-content: center;
+}
+.genre_wrapper a {
+  display: block;
+  padding: 10px;
+  background: #eeeeee;
+  border-radius: 5px;
+  opacity: 0.9;
+  color: black;
+  transition: all 0.1s ease-in-out;
+}
+.genre_wrapper a:hover {
+  background: #2e486e;
+  color: #ffffff;
+}

@@ -28,4 +28,25 @@ window.addEventListener('DOMContentLoaded', () => {
       })
     }
   }
+  // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+  const getVal = (sel) => {
+    for (let i = 0; i < sel.length; i++) {
+      if (sel[i].value === true) return sel[i].value
+    }
+  }
+
+  const inputsearch = document.getElementById('search')
+  const searchBtn = document.getElementById('search-btn')
+  // const select = document.getElementById('select')
+
+  inputsearch.addEventListener('keyup', (e) => {
+    searchBtn.setAttribute('href', `/searchresults?title=${e.target.value}`)
+  })
+  // select.addEventListener('change', (e) => {
+  //   let selectVal = getVal(select)
+  //   console.log(selectVal)
+
+  //   // searchBtn.setAttribute('href', `/searchresults?title=${inputsearch.value}&genre=${selectVal}`)
+  // })
 })
