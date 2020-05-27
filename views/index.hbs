@@ -1,6 +1,10 @@
 {{!-- call header from partials folder --}}
 {{> menu}}
 
+<div class="search">
+    <input type="search" name="search" placeholder="Search by title..." class="input-search">
+    <input type="button" name="search" id="search-btn" class="input-search" value="search">
+</div>
 <div class="container ">
     <div class="cards_container">
         {{!-- check if movies passing from router  = true --}}

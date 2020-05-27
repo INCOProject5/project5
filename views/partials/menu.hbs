@@ -12,9 +12,15 @@
                     <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
+            {{#if user}}
             <a href="/logout" class=" my-2 my-lg-0  btn btn-primary">
                 Logout
             </a>
+            {{else}}
+            <a href="/login" class=" my-2 my-lg-0  btn btn-primary">
+                Login
+            </a>
+            {{/if}}
         </div>
     </div>
 </nav>

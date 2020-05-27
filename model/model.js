@@ -39,8 +39,10 @@ const signup = async (user) => {
 const getRatesByMovieId = async (id) => query(`SELECT rate FROM movie WHERE movie_id=?`, [id])
 const getMovieByUserId = async (id) => query(`SELECT * FROM movie WHERE user_id=?`, id)
 const getByMovieIdAndUserId = async (mId, uId) =>
-  // query(`SELECT * FROM movie WHERE user_id=2 AND movie_id=25`)
   query(`SELECT * FROM movie WHERE user_id=? AND movie_id=?`, [uId, mId])
+
+const insertRate = async (uid, mid, rating) =>
+  query('INSERT INTO movie (user_id, movie_id, rate) VALUES (?, ?,?)', [uid, mid, rating])
 
 const updateMovieRating = async (uid, mid, rating) =>
   query('update movie SET rate=? WHERE user_id=? AND movie_id=?', [rating, uid, mid])
@@ -53,4 +55,5 @@ module.exports = {
   getMovieByUserId,
   getByMovieIdAndUserId,
   updateMovieRating,
+  insertRate,
 }

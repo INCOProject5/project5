@@ -30,15 +30,16 @@ db.connect((err) => {
 
   db.query(createDB, (_err) => {
     if (_err) throw _err
+    db.query(useDB, (_err) => {
+      if (_err) throw _err
+      db.query(queryStrUserTable, (_err) => {
+        if (_err) throw _err
+        db.query(queryStrMovieTable, (_err) => {
+          if (_err) throw _err
+        })
+      })
+    })
   })
-  db.query(useDB, (_err) => {
-    if (_err) throw _err
-  })
-  db.query(queryStrUserTable, (_err) => {
-    if (_err) throw _err
-  })
-  db.query(queryStrMovieTable, (_err) => {
-    if (_err) throw _err
-  })
+
   return console.log('database and tables created')
 })

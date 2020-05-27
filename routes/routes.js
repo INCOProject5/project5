@@ -11,23 +11,33 @@ const {
   getMovieByUserId,
   getByMovieIdAndUserId,
   updateMovieRating,
+  insertRate,
 } = require('../model/model')
 const { average } = require('../helpers/utils')
 
 const router = express.Router()
 
 const indexGet = async (req, res) => {
-  // if session "movies"  exists
-  if (req.session && req.session.movies) return res.render('index', { movies: req.session.movies })
+  if (req.query.page === undefined) return res.redirect('/?page=3')
+  let { page } = req.query
 
-  // if sesion "movies" not exists then fetch data from api and save session
+  if (req.session && req.session.page === page) {
+    // if session "movies"  exists
+    if (req.session && req.session.movies && req.session.user)
+      return res.render('index', { movies: req.session.movies, user: req.session.user })
+    if (req.session && req.session.movies)
+      return res.render('index', { movies: req.session.movies })
+    // if sesion "movies" not exists then fetch data from api and save session
+  }
+
   axios
-    .get('https://yts.mx/api/v2/list_movies.json?order_by=asc&limit=10&sort_by=seeds&page=3')
+    .get(`https://yts.mx/api/v2/list_movies.json?order_by=asc&limit=10&sort_by=seeds&page=${page}`)
     // .then((data) => res.send(data.data)) - use for debugging
     .then((data) => {
       // curly brackets around movies appends .movies to data.data.data
       let { movies } = data.data.data
       req.session.movies = movies
+      req.session.page = page
       if (req.session.user) return res.render('index', { movies, user: req.session.user })
 
       res.render('index', { movies })
@@ -37,9 +47,10 @@ const indexGet = async (req, res) => {
 }
 //
 const movieGet = async (req, res) => {
+  let averageResult
   try {
     const { id } = req.params
-    console.log(id)
+
     const rate = await getRatesByMovieId(id)
 
     let movieBy = {}
@@ -48,7 +59,8 @@ const movieGet = async (req, res) => {
       movieBy = await getByMovieIdAndUserId(id, req.session.user.id)
     }
 
-    const averageResult = average(rate.map((each) => each.rate)).toFixed(1)
+    if (rate.length > 0) averageResult = average(rate.map((each) => each.rate)).toFixed(1)
+    else averageResult = 0
 
     if (req.session && req.session.movies) {
       let sessionData = req.session.movies
@@ -59,7 +71,8 @@ const movieGet = async (req, res) => {
           user: req.session.user,
           averageResult,
           total: rate.length,
-          myRating: movieBy.map((each) => each.rate),
+          myRating: movieBy.map((each) => each.rate)[0],
+          specialChars: '& < > " \' ` =',
         })
 
       return res.render('movie', { movie, averageResult, total: rate.length })
@@ -88,18 +101,23 @@ const movieGet = async (req, res) => {
 const ratingGet = async (req, res) => {
   res.redirect('/movie')
 }
+
 const ratingPost = async (req, res) => {
   try {
     const { user_id, movie_id, rate } = req.body
-
-    const newRating = await updateMovieRating(user_id, movie_id, rate)
+    if (req.session && req.session.user && user_id !== '') {
+      console.log(`user here :${user_id}`)
+      const checkIfuserRated = await getByMovieIdAndUserId(movie_id, user_id)
+      if (checkIfuserRated.length > 0) await updateMovieRating(user_id, movie_id, rate)
+      else await insertRate(user_id, movie_id, rate)
+    }
 
     return res.redirect(`/movie/${movie_id}`)
-    // res.json({ newdata: 'data from server' })
   } catch (error) {
     res.render('login', { error })
   }
 }
+
 const loginGet = (req, res) => {
   if (req.session.user) return res.redirect('/')
   return res.render('login', { data: '' })
@@ -138,7 +156,6 @@ const signupPost = async (req, res) => {
     res.render('signup', { error })
   }
 }
-
 router.get('/', indexGet)
 router.get('/movie/:id', movieGet)
 

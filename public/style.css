@@ -92,8 +92,7 @@
   text-align: center;
   height: 200px;
 }
-.movie_rate {
-}
+
 /* Star Rating form */
 .rating {
   display: inline-block;
@@ -213,3 +212,24 @@
   height: 40px;
   text-align: center;
 }
+
+.search {
+  width: 100%;
+}
+.input-search {
+  margin: 30px auto 0;
+  display: block;
+  /* rem em px ..... */
+  font-size: 1.5rem;
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #ccc;
+  width: 40%;
+}
+#search-btn {
+  margin-top: 0 !important;
+}
+
+/* Things to fix */
+/* also next screen for next page of movies. */
+/* Genre tickbox sorting */

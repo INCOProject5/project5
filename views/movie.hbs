@@ -21,29 +21,29 @@
             data-user-id={{user.id}}>
             <form class="rating" data-user-id="{{../userId}}" data-movie-id="{{id}}">
                 <label>
-                    <input type="radio" name="stars" value="1" />
+                    <input type="radio" name="stars" value="1" {{{printChecked myRating 1}}} />
                     <span class="icon">★</span>
                 </label>
                 <label>
-                    <input type="radio" name="stars" value="2" />
-                    <span class="icon">★</span>
-                    <span class="icon">★</span>
-                </label>
-                <label>
-                    <input type="radio" name="stars" value="3" />
-                    <span class="icon">★</span>
+                    <input type="radio" name="stars" value="2" {{{printChecked myRating 2}}} />
                     <span class="icon">★</span>
                     <span class="icon">★</span>
                 </label>
                 <label>
-                    <input type="radio" name="stars" value="4" />
-                    <span class="icon">★</span>
+                    <input type="radio" name="stars" value="3" {{{printChecked myRating 3}}} />
                     <span class="icon">★</span>
                     <span class="icon">★</span>
                     <span class="icon">★</span>
                 </label>
                 <label>
-                    <input type="radio" name="stars" value="5" />
+                    <input type="radio" name="stars" value="4" {{{printChecked myRating 4}}} />
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                </label>
+                <label>
+                    <input type="radio" name="stars" value="5" {{{printChecked myRating 5}}} />
                     <span class="icon">★</span>
                     <span class="icon">★</span>
                     <span class="icon">★</span>

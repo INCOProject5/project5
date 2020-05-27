@@ -1,27 +1,31 @@
 /* eslint-disable camelcase */
 // when we load page (DOMContentLoaded)...
+
+let star
 window.addEventListener('DOMContentLoaded', () => {
-  const spans = document.getElementById('rating_spans').children
-  const user_id = document.getElementById('rating_spans').getAttribute('data-user-id')
-  const movie_id = document.getElementById('rating_spans').getAttribute('data-movie-id')
-  const serverUrl = 'http://localhost:3000/rating'
-  const method = 'POST'
-  const headers = { 'Content-Type': 'application/json' }
+  if (document.getElementById('rating_spans') !== null) {
+    star = document.querySelectorAll('input')
 
-  //  user_id ,movie_id and value
+    const user_id = document.getElementById('rating_spans').getAttribute('data-user-id')
+    const movie_id = document.getElementById('rating_spans').getAttribute('data-movie-id')
+    const serverUrl = 'http://localhost:3000/rating'
+    const method = 'POST'
+    const headers = { 'Content-Type': 'application/json' }
 
-  for (let i = 0; i < spans.length; i++) {
-    spans[i].addEventListener('click', (e) => {
-      let rate = e.target.getAttribute('value')
-      // console.log(rate)
-      //  sending data
-      fetch(serverUrl, {
-        method,
-        headers,
-        body: JSON.stringify({ user_id, movie_id, rate }),
-      }).then((response) => {
-        window.location.reload()
+    //  user_id ,movie_id and value
+    for (let i = 0; i < star.length; i++) {
+      star[i].addEventListener('click', (e) => {
+        console.log(e.target)
+        let rate = e.target.getAttribute('value')
+        //  sending data
+        fetch(serverUrl, {
+          method,
+          headers,
+          body: JSON.stringify({ user_id, movie_id, rate }),
+        }).then(() => {
+          window.location.reload()
+        })
       })
-    })
+    }
   }
 })
