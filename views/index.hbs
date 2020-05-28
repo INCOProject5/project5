@@ -4,21 +4,6 @@
 <div class="search">
     <input type="search" name="search" placeholder="Search by title..." class="input-search" id="search">
     <a href="/searchresults" type="button" id="search-btn" class="input-search">Search!</a>
-    {{!-- logic - on search submit, create new page (search results) which shows matches on title_english --}}
-    {{!-- <div class="genre_wrapper">
-        <select name="select" id="select">
-            <option value="">select genre</option>
-            <option value="adventure">Adventure</option>
-            <option value="animation">animation</option>
-            <option value="comedy">comedy</option>
-            <option value="crime">crime</option>
-            <option value="documentary">documentary</option>
-            <option value="drama">drama</option>
-            <option value="fantasy">fantasy</option>
-            <option value="horror">horror</option>
-            <option value="romance">romance</option>
-        </select>
-    </div> --}}
     <div class="genre_wrapper">
         <a href="/searchresults?genre=action">Action</a>
         <a href="/searchresults?genre=adventure">Adventure</a>
@@ -43,8 +28,6 @@
                 <div class="movie_header">
                     <h3>{{title_english}}</h3>
                     <span>{{year}}</span>
-                    {{!-- <span>{{ConvertRateTo5stars rating}}</span> --}}
-                    <span>rate {{rating}}</span>
                 </div>
                 <a href="/movie/{{id}}">Click for more details</a>
             </div>
@@ -53,6 +36,3 @@
         {{/if}}
     </div>
 </div>
-{{!-- {{background_image} --}}
-{{!-- {{title_long}} --}}
-{{!-- {{synopsis}} --}}

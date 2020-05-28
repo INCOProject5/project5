@@ -48,6 +48,7 @@ const indexGet = async (req, res) => {
 //
 const movieGet = async (req, res) => {
   let averageResult
+
   try {
     const { id } = req.params
 
@@ -120,25 +121,19 @@ const ratingPost = async (req, res) => {
 
 const searchGet = async (req, res) => {
   let url = `https://yts.mx/api/v2/list_movies.json?`
-  // if (req.query.genre !== null && req.query.title !== null) {
-  //   url = `${url}genre=${req.query.genre}&query_term=${req.query.title}`
-  // } else if (req.query.title !== null && req.query.title !== undefined) {
-  //   url = `${url}query_term=${req.query.title}`
-  // } else {
-  //   url = `${url}genre=${req.query.genre}`
-  // }
-
-  if (req.query.genre !== null && req.query.genre !== undefined) url = `${url}genre=${req.query.genre}`
-  if (req.query.title !== null && req.query.title !== undefined) url = `${url}query_term=${req.query.title}`
-  // (req.query.genre !== null && req.query.genre !== undefined)
-  // https://yts.mx/api/v2/list_movies.json?genre=drama&query_term=women
+  req.session.page = null
+  if (req.query.genre !== null && req.query.genre !== undefined)
+    url = `${url}genre=${req.query.genre}`
+  if (req.query.title !== null && req.query.title !== undefined)
+    url = `${url}query_term=${req.query.title}`
   console.log(url)
   await axios
     .get(url)
     .then((data) => {
       let { movies } = data.data.data
       req.session.movies = movies
-      if(req.session && req.session.user)  return res.render('search', { movies,user: req.session.user})
+      if (req.session && req.session.user)
+        return res.render('search', { movies, user: req.session.user })
       res.render('search', { movies })
     })
     .catch((err) => {
