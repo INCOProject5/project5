@@ -1,19 +1,11 @@
-/* eslint-disable eqeqeq */
-/* eslint-disable consistent-return */
 /* eslint-disable camelcase */
-/* eslint-disable no-unused-vars */
+
 const express = require('express')
 const axios = require('axios').default
-const {
-  getUserByEmailAndPass,
-  getRatesByMovieId,
-  signup,
-  getMovieByUserId,
-  getByMovieIdAndUserId,
-  updateMovieRating,
-  insertRate,
-} = require('../model/model')
-const { average } = require('../helpers/utils')
+const { movieGet, searchGet } = require('./movie')
+const { getByMovieIdAndUserId, updateMovieRating, insertRate } = require('../model/model')
+
+const { loginGet, loginPost, logoutGet, signupGet, signupPost } = require('./auth')
 
 const router = express.Router()
 
@@ -46,57 +38,6 @@ const indexGet = async (req, res) => {
     .catch((err) => console.log(err))
 }
 //
-const movieGet = async (req, res) => {
-  let averageResult
-  try {
-    const { id } = req.params
-
-    const rate = await getRatesByMovieId(id)
-
-    let movieBy = {}
-
-    if (req.session.user) {
-      movieBy = await getByMovieIdAndUserId(id, req.session.user.id)
-    }
-
-    if (rate.length > 0) averageResult = average(rate.map((each) => each.rate)).toFixed(1)
-    else averageResult = 0
-
-    if (req.session && req.session.movies) {
-      let sessionData = req.session.movies
-      let movie = sessionData.find((eachMovie) => eachMovie.id == id)
-      if (req.session.user)
-        return res.render('movie', {
-          movie,
-          user: req.session.user,
-          averageResult,
-          total: rate.length,
-          myRating: movieBy.map((each) => each.rate)[0],
-          specialChars: '& < > " \' ` =',
-        })
-
-      return res.render('movie', { movie, averageResult, total: rate.length })
-    }
-    axios
-      .get(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
-      .then((data) => {
-        let { movie } = data.data.data
-        if (req.session.user)
-          return res.render('movie', {
-            movie,
-            user: req.session.user,
-            averageResult,
-            total: rate.length,
-            myRating: movieBy.map((each) => each.rate),
-          })
-
-        res.render('movie', { movie, averageResult, total: rate.length })
-      })
-      .catch((err) => console.log(err))
-  } catch (error) {
-    console.log(error)
-  }
-}
 
 const ratingGet = async (req, res) => {
   res.redirect('/movie')
@@ -118,33 +59,6 @@ const ratingPost = async (req, res) => {
   }
 }
 
-const searchGet = async (req, res) => {
-  let url = `https://yts.mx/api/v2/list_movies.json?`
-  // if (req.query.genre !== null && req.query.title !== null) {
-  //   url = `${url}genre=${req.query.genre}&query_term=${req.query.title}`
-  // } else if (req.query.title !== null && req.query.title !== undefined) {
-  //   url = `${url}query_term=${req.query.title}`
-  // } else {
-  //   url = `${url}genre=${req.query.genre}`
-  // }
-
-  if (req.query.genre !== null && req.query.genre !== undefined) url = `${url}genre=${req.query.genre}`
-  if (req.query.title !== null && req.query.title !== undefined) url = `${url}query_term=${req.query.title}`
-  // (req.query.genre !== null && req.query.genre !== undefined)
-  // https://yts.mx/api/v2/list_movies.json?genre=drama&query_term=women
-  console.log(url)
-  await axios
-    .get(url)
-    .then((data) => {
-      let { movies } = data.data.data
-      req.session.movies = movies
-      if(req.session && req.session.user)  return res.render('search', { movies,user: req.session.user})
-      res.render('search', { movies })
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
 /**
  * ***************************************
  * ***************************************
@@ -153,44 +67,6 @@ const searchGet = async (req, res) => {
  * ***************************************
  */
 
-const loginGet = (req, res) => {
-  if (req.session.user) return res.redirect('/')
-  return res.render('login', { data: '' })
-}
-
-const loginPost = async (req, res) => {
-  try {
-    const { email, password } = req.body
-    const user = await getUserByEmailAndPass(email, password)
-
-    req.session.user = { email, id: user[0].id, firstname: user[0].firstname } // set session
-
-    res.redirect('/')
-  } catch (error) {
-    res.render('login', { error })
-  }
-}
-
-const logoutGet = async (req, res, next) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return next(err)
-    }
-    return res.redirect('/login')
-  })
-}
-
-const signupGet = async (req, res) => {
-  res.render('signup')
-}
-const signupPost = async (req, res) => {
-  try {
-    await signup(req.body)
-    res.redirect('/login')
-  } catch (error) {
-    res.render('signup', { error })
-  }
-}
 router.get('/', indexGet)
 router.get('/movie/:id', movieGet)
 
