@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "initdb": "node ./model/initial_db_from.js",
     "createusers": "node ./model/createUsers.js"
   },
